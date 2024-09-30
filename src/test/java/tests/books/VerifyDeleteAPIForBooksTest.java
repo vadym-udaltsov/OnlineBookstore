@@ -1,5 +1,6 @@
 package tests.books;
 
+import com.github.javafaker.Faker;
 import io.qameta.allure.Description;
 import models.Book;
 import org.testng.Assert;
@@ -14,6 +15,7 @@ public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
                 .stream()
                 .map(Book::getId)
                 .toList();
+        var faker = new Faker();
         var randomBook = client.getBookById(faker.number().numberBetween(1, idsList.size() - 1));
         var randomBookId = randomBook.getId();
         client.deleteBook(randomBookId);
