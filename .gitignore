@@ -1,0 +1,66 @@
+# Maven build output
+target/*
+/target/site/allure-maven-plugin/*
+!/target/site/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+*.jar
+*.xml
+!pom.xml
+!testng.xml
+*.css
+.allure/
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans/
+.sts4-cache/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# VS Code
+.vscode/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+
+# Allure reports
+allure
+
+# Custom generated files
+*.class
+*.pb
+*.svg
+
+# Ignore dependency files
+*.dependencies
+
+# User-specific files
+*.user
+workspace.xml
+*.sublime-workspace
