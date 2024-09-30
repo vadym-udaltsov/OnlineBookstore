@@ -1,14 +1,16 @@
 package tests;
 
 import com.github.javafaker.Faker;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+
+import java.lang.reflect.Method;
 
 public abstract class BaseApiTest<T> {
     protected T client;
     protected Faker faker;
 
-    @BeforeClass(alwaysRun = true)
-    public void setup() {
+    @BeforeMethod(alwaysRun = true)
+    public void setup(Method method) {
         this.faker = new Faker();
     }
 }

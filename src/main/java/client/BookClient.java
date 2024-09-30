@@ -5,6 +5,8 @@ import models.Book;
 
 import java.util.List;
 
+import static java.lang.StringTemplate.STR;
+
 public class BookClient {
     private final OnlineBookstoreClient client;
     private final static String BOOKS_ENDPOINT = "Books";

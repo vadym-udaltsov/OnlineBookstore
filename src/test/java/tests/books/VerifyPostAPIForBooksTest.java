@@ -9,7 +9,7 @@ import tests.BaseBooksApiTest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class VerifyPostAPIForBooksTests extends BaseBooksApiTest {
+public class VerifyPostAPIForBooksTest extends BaseBooksApiTest {
 
     @Test
     @Description("New book creation test")
