@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import tests.BaseBooksApiTest;
 
-public class VerifyPutAPIForBooksTests extends BaseBooksApiTest {
+public class VerifyPutAPIForBooksTest extends BaseBooksApiTest {
 
     @Test
     @Description("Test updating an existing book")

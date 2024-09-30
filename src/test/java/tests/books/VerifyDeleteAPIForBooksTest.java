@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import tests.BaseBooksApiTest;
 
-public class VerifyDeleteAPIForBooksTests extends BaseBooksApiTest {
+public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
     @Test
     @Description("Test for deleting a book")
     public void testDeleteBook() {
