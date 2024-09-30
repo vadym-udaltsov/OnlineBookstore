@@ -1,5 +1,6 @@
 package tests.books;
 
+import com.github.javafaker.Faker;
 import io.qameta.allure.Description;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -10,6 +11,7 @@ public class VerifyPutAPIForBooksTest extends BaseBooksApiTest {
     @Test
     @Description("Test updating an existing book")
     public void testUpdateBook() {
+        var faker = new Faker();
         var bookToUpdate = client.getBookById(1);
         var randomTitle = faker.book().title();
         bookToUpdate.setTitle(randomTitle);

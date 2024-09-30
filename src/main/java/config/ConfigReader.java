@@ -1,6 +1,6 @@
 package config;
 
-import exceptions.PropertyReaderException;
+import exceptions.CustomException;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -26,7 +26,7 @@ public class ConfigReader {
                     }
                     configs = properties;
                 } catch (IOException ex) {
-                    throw new PropertyReaderException(EXCEPTION_TEXT + ex.getMessage());
+                    throw new CustomException(EXCEPTION_TEXT + ex.getMessage());
                 }
             }
         }
