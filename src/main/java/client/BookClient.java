@@ -3,34 +3,30 @@ package client;
 import io.restassured.response.Response;
 import models.Book;
 
-import java.util.List;
-
 import static java.lang.StringTemplate.STR;
 
 public class BookClient {
-    private final OnlineBookstoreClient client;
+    private final BaseClient client;
     private final static String BOOKS_ENDPOINT = "Books";
 
     public BookClient() {
-        client = new OnlineBookstoreClient();
+        client = new BaseClient();
     }
 
-    public List<Book> getBooksList() {
-        return client.get(BOOKS_ENDPOINT)
-                .jsonPath()
-                .getList("", Book.class);
+    public Response getBooksResponse() {
+        return client.get(BOOKS_ENDPOINT);
     }
 
-    public Book getBookById(int id) {
-        return client.get(STR."\{BOOKS_ENDPOINT}/\{id}").as(Book.class);
+    public Response getBookByIdResponse(int id) {
+        return client.get(STR."\{BOOKS_ENDPOINT}/\{id}");
     }
 
-    public Book createBook(Book book) {
-        return client.post(BOOKS_ENDPOINT, book, Book.class);
+    public Response createBook(Book book) {
+        return client.post(BOOKS_ENDPOINT, book);
     }
 
-    public Book updateBook(int id, Book book) {
-        return client.put(STR."\{BOOKS_ENDPOINT}/\{id}", book, Book.class);
+    public Response updateBook(int id, Book book) {
+        return client.put(STR."\{BOOKS_ENDPOINT}/\{id}", book);
 
     }
 
