@@ -1,7 +1,8 @@
 package tests.books;
 
+import enums.ErrorMessages;
 import models.Book;
-import models.errors.BookErrorResponse;
+import models.errors.ErrorResponse;
 import org.apache.http.HttpStatus;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.Assert;
@@ -9,7 +10,8 @@ import org.testng.annotations.Test;
 import tests.BaseBooksApiTest;
 import utils.BookHelper;
 
-public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
+public class VerifyDeleteBookAPITest extends BaseBooksApiTest {
+
     @Test(description = "Verify that we can delete an existing book")
     public void deleteExistingBookTest() {
         var booksList = client.getBooksResponse().jsonPath().getList("", Book.class);
@@ -20,7 +22,7 @@ public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be deleted");
 
         var checkResponse = client.getBookByIdResponse(existenceBook.getId());
-        var errorModel = checkResponse.as(BookErrorResponse.class);
+        var errorModel = checkResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(checkResponse.getStatusCode())
@@ -28,7 +30,7 @@ public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())
                     .as("Book should be deleted")
-                    .isEqualTo("Not Found");
+                    .isEqualTo(ErrorMessages.NOT_FOUND_ERROR_MESSAGE.getMessage());
         });
     }
 
@@ -44,7 +46,7 @@ public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be deleted");
 
         var checkResponse = client.getBookByIdResponse(createdBook.getId());
-        var errorModel = checkResponse.as(BookErrorResponse.class);
+        var errorModel = checkResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(checkResponse.getStatusCode())
@@ -52,11 +54,11 @@ public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())
                     .as("Book should be deleted")
-                    .isEqualTo("Not Found");
+                    .isEqualTo(ErrorMessages.NOT_FOUND_ERROR_MESSAGE.getMessage());
         });
     }
 
-    @Test(description = "Verify that trying to delete a non-existent book")
+    @Test(description = "Verify trying to delete a non-existent book")
     public void deleteNonExistentBookTest() {
         var booksList = client.getBooksResponse().jsonPath().getList("", Book.class);
         var lastId = booksList.stream()
@@ -70,7 +72,7 @@ public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
                 "Cannot delete book with non-existent Id");
     }
 
-    @Test(description = "Verify that trying to delete a book with negative id")
+    @Test(description = "Verify trying to delete a book with negative id")
     public void deleteBookWithNegativeIdTest() {
         var negativeId = Integer.parseInt(STR."-\{faker.number().numberBetween(1, 5)}");
         var deleteResponse = client.deleteBook(negativeId);
@@ -79,7 +81,7 @@ public class VerifyDeleteAPIForBooksTest extends BaseBooksApiTest {
                 "Cannot delete book with negative Id");
     }
 
-    @Test(description = "Verify that trying to delete a book after it has already been deleted")
+    @Test(description = "Verify trying to delete a book after it has already been deleted")
     public void deleteAlreadyDeletedBookTest() {
         var booksList = client.getBooksResponse().jsonPath().getList("", Book.class);
         var existenceBook = client.getBookByIdResponse(BookHelper.getRandomBookId(booksList))

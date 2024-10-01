@@ -7,8 +7,9 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import tests.BaseBooksApiTest;
 import utils.BookHelper;
+import utils.JsonUtils;
 
-public class VerifyPutAPIForBooksTest extends BaseBooksApiTest {
+public class VerifyPutBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Verify that we can update an existing book")
     public void updateExistingBookTest() {
@@ -33,38 +34,29 @@ public class VerifyPutAPIForBooksTest extends BaseBooksApiTest {
         });
     }
 
-    @Test(description = "Verify that updating a non-existent book fails")
+    @Test(description = "Verify updating a non-existent book")
     public void updateNonExistentBookTest() {
+        var authorsList = client.getBooksResponse().jsonPath().getList("", Book.class);
+        var lastId = authorsList.stream()
+                .map(Book::getId)
+                .max(Long::compare)
+                .orElseThrow();
         var model = BookHelper.getBookWithRandomValues();
 
-        var postResponse = client.createBook(model);
-        Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be created");
-        var createdBook = postResponse.as(Book.class);
+        var putResponse = client.updateBook(lastId + faker.number().numberBetween(100, 200), model);
 
-        var newBook = BookHelper.getBookWithRandomValues();
-
-        var putResponse = client.updateBook(createdBook.getId(), newBook);
-        var updatedBook = putResponse.as(Book.class);
-
-        SoftAssertions.assertSoftly(as -> {
-            as.assertThat(putResponse.getStatusCode())
-                    .as(STR."Status Code should be equal to \{HttpStatus.SC_OK}")
-                    .isEqualTo(HttpStatus.SC_OK);
-            as.assertThat(createdBook)
-                    .as(STR."Book should be updated: \{updatedBook}")
-                    .isNotEqualTo(updatedBook);
-        });
+        Assert.assertEquals(putResponse.getStatusCode(), HttpStatus.SC_NOT_FOUND, "Book doesn't exist");
     }
 
 
-    @Test(description = "Verify that updating only one field of the book is successful")
+    @Test(description = "Verify updating only one field of the book is successful")
     public void updateSingleFieldTest() {
         var booksList = client.getBooksResponse().jsonPath().getList("", Book.class);
         var randomBookId = BookHelper.getRandomBookId(booksList);
 
         var existingBook = client.getBookByIdResponse(randomBookId).as(Book.class);
 
-        var newTitle = STR."\{faker.book().title()}sadasdsad";
+        var newTitle = STR."New \{faker.book().title()}";
 
         var updatedModel = Book.builder()
                 .id(existingBook.getId())
@@ -76,7 +68,7 @@ public class VerifyPutAPIForBooksTest extends BaseBooksApiTest {
                 .build();
 
         var putResponse = client.updateBook(existingBook.getId(), updatedModel);
-        var updatedBook = putResponse.as(Book.class);
+        var updatedBook = client.getBookByIdResponse(existingBook.getId()).as(Book.class);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(putResponse.getStatusCode())
@@ -86,19 +78,35 @@ public class VerifyPutAPIForBooksTest extends BaseBooksApiTest {
                     .as(STR."Book Title should be updated: \{newTitle}")
                     .isEqualTo(newTitle);
             as.assertThat(updatedBook)
-                    .as("Book should be updated and not equal to previous version")
-                    .isNotEqualTo(existingBook);
+                    .as("Book should be updated in the DB")
+                    .isEqualTo(existingBook);
         });
     }
 
-    @Test(description = "Verify that updating a book with negative ID fails")
-    public void updateBookWithNegativeIdTest() {
+    @Test(description = "Verify updating a book by negative ID")
+    public void updateBookByNegativeIdTest() {
         var book = BookHelper.getBookWithRandomValues();
         var negativeId = Integer.parseInt(STR."-\{faker.number().numberBetween(1, 5)}");
 
         var putResponse = client.updateBook(negativeId, book);
 
         Assert.assertEquals(putResponse.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
-                STR."Status Code should be equal to: \{HttpStatus.SC_BAD_REQUEST}");
+                "Cannot update book by negative Id");
+    }
+
+    @Test(description = "Verify updating a book with negative ID")
+    public void updateBookWithNegativeIdTest() {
+        var model = BookHelper.getBookWithRandomValues();
+        var negativeId = Integer.parseInt(STR."-\{faker.number().numberBetween(1, 5)}");
+
+        var booksList = JsonUtils.jsonToObjectsList(client.getBooksResponse(), Book.class);
+        var randomId = BookHelper.getRandomBookId(booksList);
+
+        model.setId(negativeId);
+
+        var putResponse = client.updateBook(randomId, model);
+
+        Assert.assertEquals(putResponse.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
+                "Cannot update book with negative Id");
     }
 }

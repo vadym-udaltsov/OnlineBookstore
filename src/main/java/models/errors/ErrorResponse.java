@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookErrorResponse {
+public class ErrorResponse {
     private String type;
     private String title;
     private int status;

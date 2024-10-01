@@ -1,7 +1,8 @@
 package tests.books;
 
+import enums.ErrorMessages;
 import models.Book;
-import models.errors.BookErrorResponse;
+import models.errors.ErrorResponse;
 import org.apache.http.HttpStatus;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.Assert;
@@ -12,7 +13,7 @@ import utils.JsonUtils;
 
 import java.util.stream.IntStream;
 
-public class VerifyGetAPIForBooksTest extends BaseBooksApiTest {
+public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify that we can get list with all books")
     public void getBooksListTest() {
         var response = client.getBooksResponse();
@@ -95,22 +96,22 @@ public class VerifyGetAPIForBooksTest extends BaseBooksApiTest {
                     .isEqualTo(randomBookId);
             as.assertThat(deserializedBook.getTitle())
                     .as("Book should contain valid title")
-                    .isNotEqualToIgnoringCase("Not Found");
+                    .isNotEqualToIgnoringCase(ErrorMessages.NOT_FOUND_ERROR_MESSAGE.getMessage());
         });
     }
 
     @Test(description = "Verify that we cannot get book by non-existent ID")
-    public void getBookByIdNonExistentIdTest() {
+    public void getBookByNonExistentIdTest() {
         var nonExistentBookResponse = client.getBookByIdResponse(faker.number().numberBetween(8888, 9999));
-        var errorModel = nonExistentBookResponse.as(BookErrorResponse.class);
+        var errorModel = nonExistentBookResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(nonExistentBookResponse.getStatusCode())
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())
-                    .as("Book should have id")
-                    .isEqualTo("Not Found");
+                    .as("Error should have message with text")
+                    .isEqualTo(ErrorMessages.NOT_FOUND_ERROR_MESSAGE.getMessage());
         });
     }
 
@@ -125,16 +126,16 @@ public class VerifyGetAPIForBooksTest extends BaseBooksApiTest {
         var deleteResponse = client.deleteBook(createdBook.getId());
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be deleted");
 
-        var checkResponse = client.getBookByIdResponse(createdBook.getId());
-        var errorModel = checkResponse.as(BookErrorResponse.class);
+        var getResponse = client.getBookByIdResponse(createdBook.getId());
+        var errorModel = getResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
-            as.assertThat(checkResponse.getStatusCode())
+            as.assertThat(getResponse.getStatusCode())
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())
-                    .as("Book should be deleted")
-                    .isEqualTo("Not Found");
+                    .as("Error should have message with text")
+                    .isEqualTo(ErrorMessages.NOT_FOUND_ERROR_MESSAGE.getMessage());
         });
     }
 

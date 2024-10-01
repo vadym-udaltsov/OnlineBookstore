@@ -11,19 +11,22 @@ public class AuthorClient {
         client = new BaseClient();
     }
 
-    public Response getAuthorsList() {
+    public Response getAuthorsResponse() {
         return client.get(AUTHORS_ENDPOINT);
     }
+    public Response getAuthorsByBookIdResponse(int bookId) {
+        return client.get(AUTHORS_ENDPOINT.concat(STR."/authors/books/\{bookId}"));
+    }
 
-    public Response getAuthorById(int id) {
+    public Response getAuthorByIdResponse(int id) {
         return client.get(STR."\{AUTHORS_ENDPOINT}/\{id}");
     }
 
-    public Response addAuthor(Author author) {
+    public Response createAuthor(Author author) {
         return client.post(AUTHORS_ENDPOINT, author);
     }
 
-    public Response updateAuthorInfo(int id, Author author) {
+    public Response updateAuthor(int id, Author author) {
         return client.put(STR."\{AUTHORS_ENDPOINT}/\{id}", author);
 
     }
