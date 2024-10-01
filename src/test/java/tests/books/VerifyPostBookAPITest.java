@@ -1,7 +1,7 @@
 package tests.books;
 
 import models.Book;
-import models.errors.BookErrorResponse;
+import models.errors.ErrorResponse;
 import org.apache.http.HttpStatus;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.Assert;
@@ -11,16 +11,16 @@ import utils.BookHelper;
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 
-public class VerifyPostAPIForBooksTest extends BaseBooksApiTest {
+public class VerifyPostBookAPITest extends BaseBooksApiTest {
 
     private final String VALIDATION_ERROR_MESSAGE = "One or more validation errors occurred.";
     private final String DATE_ERROR_MESSAGE = "The JSON value could not be converted to System.DateTime.";
 
     @Test(description = "Verify that we can create a new book")
     public void createBookTest() {
-        var book = BookHelper.getBookWithRandomValues();
+        var model = BookHelper.getBookWithRandomValues();
 
-        var postResponse = client.createBook(book);
+        var postResponse = client.createBook(model);
         var createdBook = postResponse.as(Book.class);
 
         SoftAssertions.assertSoftly(as -> {
@@ -35,7 +35,7 @@ public class VerifyPostAPIForBooksTest extends BaseBooksApiTest {
                     .isNotZero();
             as.assertThat(createdBook.getTitle())
                     .as("Created book should have the correct title")
-                    .isEqualTo(book.getTitle());
+                    .isEqualTo(model.getTitle());
         });
     }
 
@@ -61,7 +61,7 @@ public class VerifyPostAPIForBooksTest extends BaseBooksApiTest {
                 .build();
 
         var postResponse = client.createBook(incompleteBook);
-        var errorModel = postResponse.as(BookErrorResponse.class);
+        var errorModel = postResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(postResponse.getStatusCode())
@@ -78,13 +78,13 @@ public class VerifyPostAPIForBooksTest extends BaseBooksApiTest {
 
     @Test(description = "Verify that creating a book with a negative page count fails")
     public void createBookWithNegativePageCountTest() {
-        var invalidBook = BookHelper.getBookWithRandomValues();
+        var invalidModel = BookHelper.getBookWithRandomValues();
         var negativeNumber = Integer.parseInt(STR."-\{faker.number().numberBetween(1, 5)}");
 
-        invalidBook.setId(negativeNumber);
-        invalidBook.setPageCount(negativeNumber);
+        invalidModel.setId(negativeNumber);
+        invalidModel.setPageCount(negativeNumber);
 
-        var postResponse = client.createBook(invalidBook);
+        var postResponse = client.createBook(invalidModel);
 
         Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_BAD_REQUEST,
                 STR."Status Code should be equal to: \{HttpStatus.SC_BAD_REQUEST}");
