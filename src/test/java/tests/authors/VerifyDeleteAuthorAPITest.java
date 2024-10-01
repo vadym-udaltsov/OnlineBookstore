@@ -21,11 +21,11 @@ public class VerifyDeleteAuthorAPITest extends BaseAuthorsApiTest {
         var deleteResponse = client.deleteAuthor(existenceAuthor.getId());
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Author should be deleted");
 
-        var checkResponse = client.getAuthorByIdResponse(existenceAuthor.getId());
-        var errorModel = checkResponse.as(ErrorResponse.class);
+        var getAuthorByIdResponse = client.getAuthorByIdResponse(existenceAuthor.getId());
+        var errorModel = getAuthorByIdResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
-            as.assertThat(checkResponse.getStatusCode())
+            as.assertThat(getAuthorByIdResponse.getStatusCode())
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())
@@ -36,20 +36,20 @@ public class VerifyDeleteAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify that we can delete an created author")
     public void deleteCreatedAuthorTest() {
-        var model = AuthorHelper.getAuthorWithRandomValues();
+        var author = AuthorHelper.getAuthorWithRandomValues();
 
-        var postResponse = client.createAuthor(model);
+        var postResponse = client.createAuthor(author);
         Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_OK, "Author should be created");
         var createdAuthor = postResponse.as(Author.class);
 
         var deleteResponse = client.deleteAuthor(createdAuthor.getId());
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Author should be deleted");
 
-        var checkResponse = client.getAuthorByIdResponse(createdAuthor.getId());
-        var errorModel = checkResponse.as(ErrorResponse.class);
+        var getAuthorByIdResponse = client.getAuthorByIdResponse(createdAuthor.getId());
+        var errorModel = getAuthorByIdResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
-            as.assertThat(checkResponse.getStatusCode())
+            as.assertThat(getAuthorByIdResponse.getStatusCode())
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())

@@ -21,11 +21,11 @@ public class VerifyDeleteBookAPITest extends BaseBooksApiTest {
         var deleteResponse = client.deleteBook(existenceBook.getId());
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be deleted");
 
-        var checkResponse = client.getBookByIdResponse(existenceBook.getId());
-        var errorModel = checkResponse.as(ErrorResponse.class);
+        var getBookByIdResponse = client.getBookByIdResponse(existenceBook.getId());
+        var errorModel = getBookByIdResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
-            as.assertThat(checkResponse.getStatusCode())
+            as.assertThat(getBookByIdResponse.getStatusCode())
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())
@@ -36,20 +36,20 @@ public class VerifyDeleteBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Verify that we can delete an created book")
     public void deleteCreatedBookTest() {
-        var model = BookHelper.getBookWithRandomValues();
+        var book = BookHelper.getBookWithRandomValues();
 
-        var postResponse = client.createBook(model);
+        var postResponse = client.createBook(book);
         Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be created");
         var createdBook = postResponse.as(Book.class);
 
         var deleteResponse = client.deleteBook(createdBook.getId());
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be deleted");
 
-        var checkResponse = client.getBookByIdResponse(createdBook.getId());
-        var errorModel = checkResponse.as(ErrorResponse.class);
+        var getBookByIdResponse = client.getBookByIdResponse(createdBook.getId());
+        var errorModel = getBookByIdResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
-            as.assertThat(checkResponse.getStatusCode())
+            as.assertThat(getBookByIdResponse.getStatusCode())
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())

@@ -9,7 +9,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import tests.BaseBooksApiTest;
 import utils.BookHelper;
-import utils.JsonUtils;
 
 import java.util.stream.IntStream;
 
@@ -17,7 +16,8 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify that we can get list with all books")
     public void getBooksListTest() {
         var response = client.getBooksResponse();
-        var deserializedBooksList = JsonUtils.jsonToObjectsList(response, Book.class);
+        var deserializedBooksList = response.jsonPath()
+                .getList("", Book.class);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(response.getStatusCode())
@@ -32,7 +32,8 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify books list is sorted by ID")
     public void verifyThatBooksListIsSortedTest() {
         var response = client.getBooksResponse();
-        var deserializedBooksList = JsonUtils.jsonToObjectsList(response, Book.class);
+        var deserializedBooksList = response.jsonPath()
+                .getList("", Book.class);
 
         var isSorted = IntStream.range(0, deserializedBooksList.size() - 1)
                 .allMatch(i -> deserializedBooksList.get(i).getId() <= deserializedBooksList.get(i + 1).getId());
@@ -50,7 +51,8 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Check that all books have the required fields")
     public void isEachFieldExistsInBookModelTest() {
         var response = client.getBooksResponse();
-        var deserializedBooksList = JsonUtils.jsonToObjectsList(response, Book.class);
+        var deserializedBooksList = response.jsonPath()
+                .getList("", Book.class);
 
         deserializedBooksList.forEach(book -> SoftAssertions.assertSoftly(as -> {
             as.assertThat(book.getId())
@@ -77,7 +79,8 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify that we can get book by ID")
     public void getBookByIdTest() {
         var response = client.getBooksResponse();
-        var deserializedBooksList = JsonUtils.jsonToObjectsList(response, Book.class);
+        var deserializedBooksList = response.jsonPath()
+                .getList("", Book.class);
 
         var randomBookId = BookHelper.getRandomBookId(deserializedBooksList);
 
@@ -117,9 +120,9 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Verify that we cannot get deleted book")
     public void getDeletedBook() {
-        var model = BookHelper.getBookWithRandomValues();
+        var book = BookHelper.getBookWithRandomValues();
 
-        var postResponse = client.createBook(model);
+        var postResponse = client.createBook(book);
         Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_OK, "Book should be created");
         var createdBook = postResponse.as(Book.class);
 

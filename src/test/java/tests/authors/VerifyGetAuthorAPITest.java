@@ -1,7 +1,7 @@
 package tests.authors;
 
-import client.BookClient;
 import enums.ErrorMessages;
+import http.BookClient;
 import models.Author;
 import models.Book;
 import models.errors.ErrorResponse;
@@ -12,7 +12,6 @@ import org.testng.annotations.Test;
 import tests.BaseAuthorsApiTest;
 import utils.AuthorHelper;
 import utils.BookHelper;
-import utils.JsonUtils;
 
 import java.util.stream.IntStream;
 
@@ -21,7 +20,8 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Verify that we can get list with all authors")
     public void getAuthorsListTest() {
         var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = JsonUtils.jsonToObjectsList(response, Author.class);
+        var deserializedAuthorsList = response.jsonPath()
+                .getList("", Author.class);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(response.getStatusCode())
@@ -36,7 +36,8 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Verify authors list is sorted by ID")
     public void verifyThatAuthorsListIsSortedTest() {
         var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = JsonUtils.jsonToObjectsList(response, Author.class);
+        var deserializedAuthorsList = response.jsonPath()
+                .getList("", Author.class);
 
         var isSorted = IntStream.range(0, deserializedAuthorsList.size() - 1)
                 .allMatch(i -> deserializedAuthorsList.get(i).getId() <= deserializedAuthorsList.get(i + 1).getId());
@@ -54,7 +55,8 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Check that all authors have the required fields")
     public void isEachFieldExistsInAuthorModelTest() {
         var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = JsonUtils.jsonToObjectsList(response, Author.class);
+        var deserializedAuthorsList = response.jsonPath()
+                .getList("", Author.class);
 
         deserializedAuthorsList.forEach(author -> SoftAssertions.assertSoftly(as -> {
             as.assertThat(author.getId())
@@ -75,7 +77,8 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Verify that we can get author by Id")
     public void getAuthorByIdTest() {
         var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = JsonUtils.jsonToObjectsList(response, Author.class);
+        var deserializedAuthorsList = response.jsonPath()
+                .getList("", Author.class);
 
         var randomAuthorId = AuthorHelper.getRandomAuthorId(deserializedAuthorsList);
 
@@ -102,13 +105,15 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     public void getAuthorByBookIdTest() {
         var bookClient = new BookClient();
         var bookResponse = bookClient.getBooksResponse();
-        var booksList = JsonUtils.jsonToObjectsList(bookResponse, Book.class);
+        var booksList = bookResponse.jsonPath()
+                .getList("", Book.class);
         var bookId = bookClient.getBookByIdResponse(BookHelper.getRandomBookId(booksList))
                 .as(Book.class)
                 .getId();
 
         var response = client.getAuthorsByBookIdResponse(bookId);
-        var deserializedAuthorsList = JsonUtils.jsonToObjectsList(response, Author.class);
+        var deserializedAuthorsList = response.jsonPath()
+                .getList("", Author.class);
 
         var isEachAuthorContainBookId = deserializedAuthorsList.stream()
                 .allMatch(a -> a.getIdBook() == bookId);
@@ -141,7 +146,7 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())
-                    .as("Error should have message with text: Not Found" )
+                    .as("Error should have message with text: Not Found")
                     .isEqualTo(ErrorMessages.NOT_FOUND_ERROR_MESSAGE.getMessage());
         });
     }
@@ -164,20 +169,20 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify that we cannot get deleted author")
     public void getDeletedAuthor() {
-        var model = AuthorHelper.getAuthorWithRandomValues();
+        var author = AuthorHelper.getAuthorWithRandomValues();
 
-        var postResponse = client.createAuthor(model);
+        var postResponse = client.createAuthor(author);
         Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_OK, "Author should be created");
         var createdAuthor = postResponse.as(Author.class);
 
         var deleteResponse = client.deleteAuthor(createdAuthor.getId());
         Assert.assertEquals(deleteResponse.getStatusCode(), HttpStatus.SC_OK, "Author should be deleted");
 
-        var getResponse = client.getAuthorByIdResponse(createdAuthor.getId());
-        var errorModel = getResponse.as(ErrorResponse.class);
+        var getAuthorByIdResponse = client.getAuthorByIdResponse(createdAuthor.getId());
+        var errorModel = getAuthorByIdResponse.as(ErrorResponse.class);
 
         SoftAssertions.assertSoftly(as -> {
-            as.assertThat(getResponse.getStatusCode())
+            as.assertThat(getAuthorByIdResponse.getStatusCode())
                     .as(STR."Code Status should be equal to: \{HttpStatus.SC_NOT_FOUND}")
                     .isEqualTo(HttpStatus.SC_NOT_FOUND);
             as.assertThat(errorModel.getTitle())

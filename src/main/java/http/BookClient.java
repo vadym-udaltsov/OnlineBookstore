@@ -1,4 +1,4 @@
-package client;
+package http;
 
 import io.restassured.response.Response;
 import models.Book;
@@ -7,7 +7,7 @@ import static java.lang.StringTemplate.STR;
 
 public class BookClient {
     private final BaseClient client;
-    private final static String BOOKS_ENDPOINT = "Books";
+    private final static String BOOKS_ENDPOINT = "/api/v1/Books";
 
     public BookClient() {
         client = new BaseClient();

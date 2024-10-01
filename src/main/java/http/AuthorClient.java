@@ -1,11 +1,11 @@
-package client;
+package http;
 
 import io.restassured.response.Response;
 import models.Author;
 
 public class AuthorClient {
     private final BaseClient client;
-    private final static String AUTHORS_ENDPOINT = "Authors";
+    private final static String AUTHORS_ENDPOINT = "/api/v1/Authors";
 
     public AuthorClient() {
         client = new BaseClient();
