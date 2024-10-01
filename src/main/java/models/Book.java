@@ -1,6 +1,5 @@
 package models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.javafaker.Faker;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,12 +10,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Book {
-    private int id;
+    @Builder.Default
+    private int id = Faker.instance().number().numberBetween(500, 700);
     @Builder.Default
     private String title = Faker.instance().book().title();
     @Builder.Default
