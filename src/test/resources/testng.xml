@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
-<suite name="Suite">
-    <test name="Tests">
+<suite name="Suite" parallel="false">
+    <test name="Book Tests">
         <packages>
-            <package name="tests.*"/>
+            <package name="tests.books"/>
+        </packages>
+    </test>
+    <test name="Author Tests">
+        <packages>
+            <package name="tests.authors"/>
         </packages>
     </test>
 </suite>
