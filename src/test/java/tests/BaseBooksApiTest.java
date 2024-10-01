@@ -1,6 +1,6 @@
 package tests;
 
-import client.BookClient;
+import http.BookClient;
 import com.github.javafaker.Faker;
 
 public class BaseBooksApiTest extends BaseApiTest<BookClient> {

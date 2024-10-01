@@ -1,6 +1,6 @@
 package tests;
 
-import client.AuthorClient;
+import http.AuthorClient;
 import com.github.javafaker.Faker;
 
 public class BaseAuthorsApiTest extends BaseApiTest<AuthorClient> {

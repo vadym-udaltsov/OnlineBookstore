@@ -1,15 +1,14 @@
-package client;
+package http;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
+import utils.config.ConfigReader;
 
 import static io.restassured.RestAssured.given;
-import static utils.ConfigReader.getProperty;
 
 public class BaseClient {
-    private static final String URL = getProperty("base.url").concat(getProperty("api.version.endpoint"));
-    private static final String CONTENT_TYPE = "application/json";
+    private static final String URL = ConfigReader.getBaseUrl();
 
     static AllureRestAssured allureFilter = new AllureRestAssured()
             .setRequestAttachmentName("API call")
@@ -35,7 +34,7 @@ public class BaseClient {
         return given()
                 .filter(allureFilter)
                 .baseUri(URL)
-                .header("Content-Type", CONTENT_TYPE)
+                .header("Content-Type", "application/json")
                 .body(body)
                 .when()
                 .request(method.name(), endpoint)
