@@ -1,0 +1,35 @@
+<div>POST to https://fakerestapi.azurewebsites.net/api/v1/Books</div>
+
+    <h4>Body</h4>
+    <div>
+    <pre class="preformated-text">
+{
+    &quot;id&quot;: 539,
+    &quot;title&quot;: &quot;For Whom the Bell Tolls&quot;,
+    &quot;description&quot;: &quot;Minima officia excepturi ut minus recusandae numquam.&quot;,
+    &quot;pageCount&quot;: 236,
+    &quot;excerpt&quot;: &quot;Vel porro pariatur accusantium accusantium id.&quot;,
+    &quot;publishDate&quot;: &quot;2024-10-02T08:09:45&quot;
+}    </pre>
+    </div>
+
+    <h4>Headers</h4>
+    <div>
+            <div>Accept: */*</div>
+            <div>Content-Type: application/json</div>
+    </div>
+
+
+
+    <h4>Curl</h4>
+    <div>
+        curl -v -X POST &#39;https://fakerestapi.azurewebsites.net/api/v1/Books&#39; -H &#39;Accept: */*&#39; -H &#39;Content-Type: application/json&#39; -d &#39;{
+    &quot;id&quot;: 539,
+    &quot;title&quot;: &quot;For Whom the Bell Tolls&quot;,
+    &quot;description&quot;: &quot;Minima officia excepturi ut minus recusandae numquam.&quot;,
+    &quot;pageCount&quot;: 236,
+    &quot;excerpt&quot;: &quot;Vel porro pariatur accusantium accusantium id.&quot;,
+    &quot;publishDate&quot;: &quot;2024-10-02T08:09:45&quot;
+}&#39;
+    </div>
+
