@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import tests.BaseAuthorsApiTest;
 import utils.AuthorHelper;
-import utils.provider.AuthorDataProvider;
+import utils.provider.author.AuthorDataProvider;
 
 public class VerifyPutAuthorAPITest extends BaseAuthorsApiTest {
 

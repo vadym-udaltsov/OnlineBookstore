@@ -5,7 +5,7 @@ import models.errors.ErrorResponse;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import tests.BaseBooksApiTest;
-import utils.provider.BookDataProvider;
+import utils.provider.book.BookDataProvider;
 
 import static enums.ErrorMessages.PUBLISH_DATE_ERROR_MESSAGE;
 import static enums.ErrorMessages.VALIDATION_ERROR_MESSAGE;

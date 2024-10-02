@@ -3,7 +3,7 @@ package http;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
-import utils.config.ConfigReader;
+import config.ConfigReader;
 
 import static io.restassured.RestAssured.given;
 
