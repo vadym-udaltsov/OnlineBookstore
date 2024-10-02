@@ -6,7 +6,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import tests.BaseBooksApiTest;
 import utils.BookHelper;
-import utils.provider.BookDataProvider;
+import utils.provider.book.BookDataProvider;
 
 public class VerifyPutBookAPITest extends BaseBooksApiTest {
 

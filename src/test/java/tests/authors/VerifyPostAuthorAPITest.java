@@ -4,7 +4,7 @@ import models.Author;
 import org.assertj.core.api.SoftAssertions;
 import org.testng.annotations.Test;
 import tests.BaseAuthorsApiTest;
-import utils.provider.AuthorDataProvider;
+import utils.provider.author.AuthorDataProvider;
 
 public class VerifyPostAuthorAPITest extends BaseAuthorsApiTest {
 
