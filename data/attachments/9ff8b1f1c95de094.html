@@ -1,0 +1,35 @@
+<div>PUT to https://fakerestapi.azurewebsites.net/api/v1/Books/40</div>
+
+    <h4>Body</h4>
+    <div>
+    <pre class="preformated-text">
+{
+    &quot;id&quot;: 535,
+    &quot;title&quot;: &quot;Brandy of the Damned&quot;,
+    &quot;description&quot;: &quot;Dicta vitae ea saepe explicabo impedit distinctio voluptatem.&quot;,
+    &quot;pageCount&quot;: 405,
+    &quot;excerpt&quot;: &quot;Ipsum tempora consectetur.&quot;,
+    &quot;publishDate&quot;: null
+}    </pre>
+    </div>
+
+    <h4>Headers</h4>
+    <div>
+            <div>Accept: */*</div>
+            <div>Content-Type: application/json</div>
+    </div>
+
+
+
+    <h4>Curl</h4>
+    <div>
+        curl -v -X PUT &#39;https://fakerestapi.azurewebsites.net/api/v1/Books/40&#39; -H &#39;Accept: */*&#39; -H &#39;Content-Type: application/json&#39; -d &#39;{
+    &quot;id&quot;: 535,
+    &quot;title&quot;: &quot;Brandy of the Damned&quot;,
+    &quot;description&quot;: &quot;Dicta vitae ea saepe explicabo impedit distinctio voluptatem.&quot;,
+    &quot;pageCount&quot;: 405,
+    &quot;excerpt&quot;: &quot;Ipsum tempora consectetur.&quot;,
+    &quot;publishDate&quot;: null
+}&#39;
+    </div>
+
