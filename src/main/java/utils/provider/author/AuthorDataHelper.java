@@ -13,7 +13,7 @@ public class AuthorDataHelper {
 
     public static Object[] getValidAuthorData(String message) {
         return new Object[]{
-                AuthorHelper.getAuthorWithRandomValues(),
+                AuthorHelper.getAuthorWithRandomValidValues(),
                 HttpStatus.SC_OK,
                 message
         };

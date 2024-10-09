@@ -15,7 +15,7 @@ public class BaseClient {
             .setResponseAttachmentName("Response");
 
     public Response get(String endpoint) {
-        return executeRequestWithoutBody(endpoint, Method.GET);
+        return executeRequest(endpoint, null, Method.GET);
     }
 
     public <T> Response post(String endpoint, T body) {
@@ -27,7 +27,7 @@ public class BaseClient {
     }
 
     public Response delete(String endpoint) {
-        return executeRequestWithoutBody(endpoint, Method.DELETE);
+        return executeRequest(endpoint, null, Method.DELETE);
     }
 
     private <T> Response executeRequest(String endpoint, T body, Method method) {
@@ -35,19 +35,7 @@ public class BaseClient {
                 .filter(allureFilter)
                 .baseUri(URL)
                 .header("Content-Type", "application/json")
-                .body(body)
-                .when()
-                .request(method.name(), endpoint)
-                .then()
-                .log().all()
-                .extract()
-                .response();
-    }
-
-    private Response executeRequestWithoutBody(String endpoint, Method method) {
-        return given()
-                .filter(allureFilter)
-                .baseUri(URL)
+                .body(body != null ? body : "")
                 .when()
                 .request(method.name(), endpoint)
                 .then()

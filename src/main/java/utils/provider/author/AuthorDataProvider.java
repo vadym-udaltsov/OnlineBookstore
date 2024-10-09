@@ -3,30 +3,30 @@ package utils.provider.author;
 import org.testng.annotations.DataProvider;
 
 public class AuthorDataProvider {
+    private static final String CREATE_MESSAGE_PREFIX = "Author with %s values shouldn't be created";
+    private static final String UPDATE_MESSAGE_PREFIX = "Author with %s values shouldn't be updated";
+
     private AuthorDataProvider() {
+    }
+
+    private static Object[][] getAuthorModelsForDataProvider(String actionPrefix) {
+        return new Object[][]{
+                AuthorDataHelper.getValidAuthorData(actionPrefix.replace("n't", " should be")),
+                AuthorDataHelper.getEmptyValuesAuthorData(String.format(actionPrefix, "empty")),
+                AuthorDataHelper.getEmptyIdAuthorData(String.format(actionPrefix, "empty ID")),
+                AuthorDataHelper.getEmptyBookIdAuthorData(String.format(actionPrefix, "empty Book ID")),
+                AuthorDataHelper.getNegativeIdAuthorData(String.format(actionPrefix, "negative ID")),
+                AuthorDataHelper.getNegativeBookIdAuthorData(String.format(actionPrefix, "negative Book ID"))
+        };
     }
 
     @DataProvider(name = "createAuthorDataProvider")
     public static Object[][] createAuthorDataProvider() {
-        return new Object[][]{
-                AuthorDataHelper.getValidAuthorData("Author with valid values should be created"),
-                AuthorDataHelper.getEmptyValuesAuthorData("Author with empty values shouldn't be created"),
-                AuthorDataHelper.getEmptyIdAuthorData("Author with empty ID shouldn't be created"),
-                AuthorDataHelper.getEmptyBookIdAuthorData("Author with empty Book ID shouldn't be created"),
-                AuthorDataHelper.getNegativeIdAuthorData("Author with negative ID shouldn't be created"),
-                AuthorDataHelper.getNegativeBookIdAuthorData("Author with negative Book ID shouldn't be created")
-        };
+        return getAuthorModelsForDataProvider(CREATE_MESSAGE_PREFIX);
     }
 
     @DataProvider(name = "updateAuthorDataProvider")
     public static Object[][] updateAuthorDataProvider() {
-        return new Object[][]{
-                AuthorDataHelper.getValidAuthorData("Author with valid values should be updated"),
-                AuthorDataHelper.getEmptyValuesAuthorData("Author with empty values shouldn't be updated"),
-                AuthorDataHelper.getEmptyIdAuthorData("Author with empty ID shouldn't be updated"),
-                AuthorDataHelper.getEmptyBookIdAuthorData("Author with empty Book ID shouldn't be updated"),
-                AuthorDataHelper.getNegativeIdAuthorData("Author with negative ID shouldn't be updated"),
-                AuthorDataHelper.getNegativeBookIdAuthorData("Author with negative Book ID shouldn't be updated")
-        };
+        return getAuthorModelsForDataProvider(UPDATE_MESSAGE_PREFIX);
     }
 }

@@ -16,8 +16,7 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify that we can get list with all books")
     public void getBooksListTest() {
         var response = client.getBooksResponse();
-        var deserializedBooksList = response.jsonPath()
-                .getList("", Book.class);
+        var deserializedBooksList = BookHelper.getBooksList(response);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(response.getStatusCode())
@@ -32,8 +31,7 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify books list is sorted by ID")
     public void verifyThatBooksListIsSortedTest() {
         var response = client.getBooksResponse();
-        var deserializedBooksList = response.jsonPath()
-                .getList("", Book.class);
+        var deserializedBooksList = BookHelper.getBooksList(response);
 
         var isSorted = IntStream.range(0, deserializedBooksList.size() - 1)
                 .allMatch(i -> deserializedBooksList.get(i).getId() <= deserializedBooksList.get(i + 1).getId());
@@ -50,9 +48,7 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Check that all books have the required fields")
     public void isEachFieldExistsInBookModelTest() {
-        var response = client.getBooksResponse();
-        var deserializedBooksList = response.jsonPath()
-                .getList("", Book.class);
+        var deserializedBooksList = BookHelper.getBooksList();
 
         deserializedBooksList.forEach(book -> SoftAssertions.assertSoftly(as -> {
             as.assertThat(book.getId())
@@ -79,8 +75,7 @@ public class VerifyGetBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify that we can get book by ID")
     public void getBookByIdTest() {
         var response = client.getBooksResponse();
-        var deserializedBooksList = response.jsonPath()
-                .getList("", Book.class);
+        var deserializedBooksList = BookHelper.getBooksList(response);
 
         var randomBookId = BookHelper.getRandomBookId(deserializedBooksList);
 

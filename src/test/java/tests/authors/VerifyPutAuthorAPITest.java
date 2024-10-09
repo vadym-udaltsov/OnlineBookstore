@@ -13,8 +13,7 @@ public class VerifyPutAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Verify that we can update an existing author", dataProvider = "updateAuthorDataProvider",
             dataProviderClass = AuthorDataProvider.class)
     public void updateExistingAuthorTest(Author author, int expectedStatusCode, String message) {
-        var authorsList = client.getAuthorsResponse().jsonPath()
-                .getList("", Author.class);
+        var authorsList = AuthorHelper.getAuthorsList();
         var randomId = AuthorHelper.getRandomAuthorId(authorsList);
 
         var putResponse = client.updateAuthor(randomId, author);
@@ -24,12 +23,12 @@ public class VerifyPutAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify updating a non-existent author")
     public void updateNonExistentAuthorTest() {
-        var authorsList = client.getAuthorsResponse().jsonPath().getList("", Author.class);
+        var authorsList = AuthorHelper.getAuthorsList();
         var lastId = authorsList.stream()
                 .map(Author::getId)
                 .max(Long::compare)
                 .orElseThrow();
-        var model = AuthorHelper.getAuthorWithRandomValues();
+        var model = AuthorHelper.getAuthorWithRandomValidValues();
 
         var putResponse = client.updateAuthor(lastId + faker.number().numberBetween(100, 200), model);
 
@@ -38,7 +37,7 @@ public class VerifyPutAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify updating a author by negative ID")
     public void updateAuthorByNegativeIdTest() {
-        var author = AuthorHelper.getAuthorWithRandomValues();
+        var author = AuthorHelper.getAuthorWithRandomValidValues();
         var negativeId = Integer.parseInt(STR."-\{faker.number().numberBetween(1, 5)}");
 
         var putResponse = client.updateAuthor(negativeId, author);

@@ -14,7 +14,7 @@ public class VerifyDeleteBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Verify that we can delete an existing book")
     public void deleteExistingBookTest() {
-        var booksList = client.getBooksResponse().jsonPath().getList("", Book.class);
+        var booksList = BookHelper.getBooksList();
         var existenceBook = client.getBookByIdResponse(BookHelper.getRandomBookId(booksList))
                 .as(Book.class);
 
@@ -60,7 +60,7 @@ public class VerifyDeleteBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Verify trying to delete a non-existent book")
     public void deleteNonExistentBookTest() {
-        var booksList = client.getBooksResponse().jsonPath().getList("", Book.class);
+        var booksList = BookHelper.getBooksList();
         var lastId = booksList.stream()
                 .map(Book::getId)
                 .max(Long::compare)
@@ -83,7 +83,7 @@ public class VerifyDeleteBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Verify trying to delete a book after it has already been deleted")
     public void deleteAlreadyDeletedBookTest() {
-        var booksList = client.getBooksResponse().jsonPath().getList("", Book.class);
+        var booksList = BookHelper.getBooksList();
         var existenceBook = client.getBookByIdResponse(BookHelper.getRandomBookId(booksList))
                 .as(Book.class);
 

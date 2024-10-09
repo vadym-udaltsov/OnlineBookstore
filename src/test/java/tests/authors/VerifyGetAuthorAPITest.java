@@ -1,9 +1,7 @@
 package tests.authors;
 
 import enums.ErrorMessages;
-import http.BookClient;
 import models.Author;
-import models.Book;
 import models.errors.ErrorResponse;
 import org.apache.http.HttpStatus;
 import org.assertj.core.api.SoftAssertions;
@@ -20,8 +18,7 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Verify that we can get list with all authors")
     public void getAuthorsListTest() {
         var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = response.jsonPath()
-                .getList("", Author.class);
+        var deserializedAuthorsList = AuthorHelper.getAuthorsList(response);
 
         SoftAssertions.assertSoftly(as -> {
             as.assertThat(response.getStatusCode())
@@ -36,8 +33,7 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Verify authors list is sorted by ID")
     public void verifyThatAuthorsListIsSortedTest() {
         var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = response.jsonPath()
-                .getList("", Author.class);
+        var deserializedAuthorsList = AuthorHelper.getAuthorsList(response);
 
         var isSorted = IntStream.range(0, deserializedAuthorsList.size() - 1)
                 .allMatch(i -> deserializedAuthorsList.get(i).getId() <= deserializedAuthorsList.get(i + 1).getId());
@@ -54,9 +50,7 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Check that all authors have the required fields")
     public void isEachFieldExistsInAuthorModelTest() {
-        var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = response.jsonPath()
-                .getList("", Author.class);
+        var deserializedAuthorsList = AuthorHelper.getAuthorsList();
 
         deserializedAuthorsList.forEach(author -> SoftAssertions.assertSoftly(as -> {
             as.assertThat(author.getId())
@@ -77,8 +71,7 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
     @Test(description = "Verify that we can get author by Id")
     public void getAuthorByIdTest() {
         var response = client.getAuthorsResponse();
-        var deserializedAuthorsList = response.jsonPath()
-                .getList("", Author.class);
+        var deserializedAuthorsList = AuthorHelper.getAuthorsList(response);
 
         var randomAuthorId = AuthorHelper.getRandomAuthorId(deserializedAuthorsList);
 
@@ -103,17 +96,10 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify that we can get authors list by Book Id")
     public void getAuthorByBookIdTest() {
-        var bookClient = new BookClient();
-        var bookResponse = bookClient.getBooksResponse();
-        var booksList = bookResponse.jsonPath()
-                .getList("", Book.class);
-        var bookId = bookClient.getBookByIdResponse(BookHelper.getRandomBookId(booksList))
-                .as(Book.class)
-                .getId();
+        var bookId = BookHelper.getBookById().getId();
 
         var response = client.getAuthorsByBookIdResponse(bookId);
-        var deserializedAuthorsList = response.jsonPath()
-                .getList("", Author.class);
+        var deserializedAuthorsList =AuthorHelper.getAuthorsList(response);
 
         var isEachAuthorContainBookId = deserializedAuthorsList.stream()
                 .allMatch(a -> a.getIdBook() == bookId);
@@ -169,7 +155,7 @@ public class VerifyGetAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify that we cannot get deleted author")
     public void getDeletedAuthor() {
-        var author = AuthorHelper.getAuthorWithRandomValues();
+        var author = AuthorHelper.getAuthorWithRandomValidValues();
 
         var postResponse = client.createAuthor(author);
         Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_OK, "Author should be created");

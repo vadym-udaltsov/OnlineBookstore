@@ -3,11 +3,9 @@ name: Java CI
 on:
   push:
     branches:
-      - main
       - '**'
   pull_request:
     branches:
-      - main
       - '**'
 
 jobs:
@@ -28,11 +26,8 @@ jobs:
         run: mvn clean install
 
       - name: Run tests with Maven
-        run: mvn test -e
+        run: mvn test
         continue-on-error: true
-
-      - name: List Allure Results
-        run: ls -R target/allure-results
 
       - name: Generate Allure report
         run: mvn allure:report
