@@ -13,8 +13,7 @@ public class VerifyPutBookAPITest extends BaseBooksApiTest {
     @Test(description = "Verify that we can update an existing book", dataProvider = "updateBookDataProvider",
             dataProviderClass = BookDataProvider.class)
     public void updateExistingBookTest(Book book, int expectedStatusCode, String message) {
-        var booksList = client.getBooksResponse().jsonPath()
-                .getList("", Book.class);
+        var booksList = BookHelper.getBooksList();
         var randomId = BookHelper.getRandomBookId(booksList);
 
         var putResponse = client.updateBook(randomId, book);
@@ -24,8 +23,8 @@ public class VerifyPutBookAPITest extends BaseBooksApiTest {
 
     @Test(description = "Verify updating a non-existent book")
     public void updateNonExistentBookTest() {
-        var authorsList = client.getBooksResponse().jsonPath().getList("", Book.class);
-        var lastId = authorsList.stream()
+        var booksList = BookHelper.getBooksList();
+        var lastId = booksList.stream()
                 .map(Book::getId)
                 .max(Long::compare)
                 .orElseThrow();

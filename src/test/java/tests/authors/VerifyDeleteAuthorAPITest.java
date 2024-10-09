@@ -14,7 +14,7 @@ public class VerifyDeleteAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify that we can delete an existing author")
     public void deleteExistingAuthorTest() {
-        var authorsList = client.getAuthorsResponse().jsonPath().getList("", Author.class);
+        var authorsList = AuthorHelper.getAuthorsList();
         var existenceAuthor = client.getAuthorByIdResponse(AuthorHelper.getRandomAuthorId(authorsList))
                 .as(Author.class);
 
@@ -36,7 +36,7 @@ public class VerifyDeleteAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify that we can delete an created author")
     public void deleteCreatedAuthorTest() {
-        var author = AuthorHelper.getAuthorWithRandomValues();
+        var author = AuthorHelper.getAuthorWithRandomValidValues();
 
         var postResponse = client.createAuthor(author);
         Assert.assertEquals(postResponse.getStatusCode(), HttpStatus.SC_OK, "Author should be created");
@@ -60,7 +60,7 @@ public class VerifyDeleteAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify trying to delete a non-existent author")
     public void deleteNonExistentAuthorTest() {
-        var authorsList = client.getAuthorsResponse().jsonPath().getList("", Author.class);
+        var authorsList = AuthorHelper.getAuthorsList();
         var lastId = authorsList.stream()
                 .map(Author::getId)
                 .max(Long::compare)
@@ -83,7 +83,7 @@ public class VerifyDeleteAuthorAPITest extends BaseAuthorsApiTest {
 
     @Test(description = "Verify trying to delete a author after it has already been deleted")
     public void deleteAlreadyDeletedAuthorTest() {
-        var authorsList = client.getAuthorsResponse().jsonPath().getList("", Author.class);
+        var authorsList = AuthorHelper.getAuthorsList();
         var existenceAuthor = client.getAuthorByIdResponse(AuthorHelper.getRandomAuthorId(authorsList))
                 .as(Author.class);
 

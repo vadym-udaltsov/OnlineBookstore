@@ -3,28 +3,29 @@ package utils.provider.book;
 import org.testng.annotations.DataProvider;
 
 public class BookDataProvider {
+    private static final String CREATE_MESSAGE_PREFIX = "Book with %s values shouldn't be created";
+    private static final String UPDATE_MESSAGE_PREFIX = "Book with %s values shouldn't be updated";
+
     private BookDataProvider() {
+    }
+
+    private static Object[][] getBookModelsForDataProvider(String actionPrefix) {
+        return new Object[][]{
+                BookDataHelper.getValidBookData(actionPrefix.replace("n't", " should be")),
+                BookDataHelper.getEmptyValuesBookData(String.format(actionPrefix, "empty")),
+                BookDataHelper.getEmptyPublishDateBookData("Error should be displayed if publish date is empty"),
+                BookDataHelper.getNegativeIdBookData(String.format(actionPrefix, "negative Id")),
+                BookDataHelper.getNegativePageCountBookData(String.format(actionPrefix, "negative Page Count"))
+        };
     }
 
     @DataProvider(name = "createBookDataProvider")
     public static Object[][] createBookDataProvider() {
-        return new Object[][]{
-                BookDataHelper.getValidBookData("Book with valid values should be created"),
-                BookDataHelper.getEmptyValuesBookData("Book with empty values shouldn't be created"),
-                BookDataHelper.getEmptyPublishDateBookData("Error should be displayed if publish date is empty"),
-                BookDataHelper.getNegativeIdBookData("Book with negative Id shouldn't be created"),
-                BookDataHelper.getNegativePageCountBookData("Book with negative Page Count shouldn't be created"),
-        };
+        return getBookModelsForDataProvider(CREATE_MESSAGE_PREFIX);
     }
 
     @DataProvider(name = "updateBookDataProvider")
     public static Object[][] updateBookDataProvider() {
-        return new Object[][]{
-                BookDataHelper.getValidBookData("Book with valid values should be updated"),
-                BookDataHelper.getEmptyValuesBookData("Book with empty values shouldn't be updated"),
-                BookDataHelper.getEmptyPublishDateBookData("Error should be displayed if publish date is empty"),
-                BookDataHelper.getNegativeIdBookData("Book with negative Id shouldn't be updated"),
-                BookDataHelper.getNegativePageCountBookData("Book with negative Page Count shouldn't be updated"),
-        };
+        return getBookModelsForDataProvider(UPDATE_MESSAGE_PREFIX);
     }
 }
